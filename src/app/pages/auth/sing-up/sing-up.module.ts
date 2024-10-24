@@ -7,13 +7,15 @@ import { IonicModule } from '@ionic/angular';
 import { SingUpPageRoutingModule } from './sing-up-routing.module';
 
 import { SingUpPage } from './sing-up.page';
+import { SharedModule } from 'src/app/shared/shared.module';
 
 @NgModule({
   imports: [
     CommonModule,
     FormsModule,
     IonicModule,
-    SingUpPageRoutingModule
+    SingUpPageRoutingModule,
+    SharedModule
   ],
   declarations: [SingUpPage]
 })

@@ -1,4 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-login-input',
@@ -7,8 +8,20 @@ import { Component, OnInit } from '@angular/core';
 })
 export class LoginInputComponent  implements OnInit {
 
+  @Input() control!: FormControl;
+  @Input() type!: string;
+  @Input() label!: string;
+  @Input() autocomplete!: string;
+  @Input() icon!: string;
+
+  isPassword!: boolean
+  hide: boolean = true;
   constructor() { }
 
-  ngOnInit() {}
+  ngOnInit() {
+    if(this.type=='pasword') this.isPassword= true
+  }
+  mostraruOcultarPass(){
 
+  }
 }

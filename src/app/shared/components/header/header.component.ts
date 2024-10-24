@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, input, Input, OnInit } from '@angular/core';
 
 @Component({
   selector: 'app-header',
@@ -7,6 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class HeaderComponent  implements OnInit {
 
+  @Input() title!: string;
+  @Input() showMenu!: boolean;
+  @Input() backButton!: string;
   constructor() { }
 
   ngOnInit() {}

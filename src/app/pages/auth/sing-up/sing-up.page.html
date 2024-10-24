@@ -1,13 +1,26 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>singUp</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header backButton="/auth" title="Registrarse"></app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">singUp</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content>
+  <div class="d-flex-center">
+
+  <form class="auth-form">
+
+    <app-logo></app-logo>
+
+    <app-login-input></app-login-input>
+
+    <div class="validator"></div>
+
+    <app-login-input></app-login-input>
+
+    <div class="validator"></div>
+    
+    <ion-button class="submit" expand="block" mode="ios" fill="outline" >
+      Registrarse
+    </ion-button>
+   
+
+  </form>
+
+  </div>
 </ion-content>

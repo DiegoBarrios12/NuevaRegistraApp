@@ -1,3 +1,13 @@
-<p>
-  login-input works!
-</p>
+<ion-item class="custom-input" lines="none">
+  <ion-icon *ngIf="icon" slot="start" color="primary" [name]="icon"> </ion-icon>
+  <ion-input 
+  [type]="type" 
+  [autocomplete]="autocomplete"
+  [label]="label"
+  label-placement="floating"
+  ></ion-input>
+  
+  <ion-button *ngIf="isPassword" (click)="mostraruOcultarPass()" slot="end" fill="clear" shape ="round">
+      <ion-icon slot="icon-only" [name]=" hide ?'eye-outline':'eye-of'"></ion-icon>
+  </ion-button>
+</ion-item>

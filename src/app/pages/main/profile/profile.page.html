@@ -1,13 +1,13 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>profile</ion-title>
-  </ion-toolbar>
-</ion-header>
+<app-header [showMenu]="true" title="Perfil"></app-header>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">profile</ion-title>
-    </ion-toolbar>
-  </ion-header>
+<ion-content class="ion-padding-top ion-text-center">
+  <ion-avatar>
+      <ion-icon class="empty-icon" name= "person-circle-outline"> </ion-icon>
+  </ion-avatar>
+  <ion-button class="photo-btn" mode="ios" size="small" shope="round">
+    <ion-icon name="camera-outline"></ion-icon>
+  </ion-button>
+
+  <h4>Diego Barrios</h4>
+  <div class="cargo">Profesor del curso</div>
 </ion-content>
