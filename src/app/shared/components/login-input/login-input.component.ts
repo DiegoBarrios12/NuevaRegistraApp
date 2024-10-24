@@ -19,9 +19,11 @@ export class LoginInputComponent  implements OnInit {
   constructor() { }
 
   ngOnInit() {
-    if(this.type=='pasword') this.isPassword= true
+    if(this.type=='password') this.isPassword= true;
   }
   mostraruOcultarPass(){
-
+    this.hide= !this.hide;
+    if(this.hide) this.type ='password'
+    else this.type= 'text' 
   }
 }

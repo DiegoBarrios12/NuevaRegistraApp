@@ -10,14 +10,17 @@ export class AuthPage implements OnInit {
   constructor() { }
 
   form= new FormGroup({
-    email: new FormControl('',[Validators.required, Validators.email]),
-    pasword: new FormControl('',[Validators.required]),
+    email: new FormControl('', [Validators.required, Validators.email]),
+    password: new FormControl('', [Validators.required]),
   })
   ngOnInit() {
   }
 
   submit(){
-    console.log(this.form.value)
+    if(this.form.valid){
+      console.log(this.form)  
+    }
+    
   }
 
 }
