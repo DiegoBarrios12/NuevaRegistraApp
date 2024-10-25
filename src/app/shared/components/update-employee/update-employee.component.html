@@ -1,3 +1,63 @@
-<p>
-  update-employee works!
-</p>
+<app-header [isModal]="true" title="agregar"></app-header>
+
+<ion-content>
+  
+
+  <form [formGroup]="form" (ngSubmit)="submit()" class="ion-padding  ion-text-center" (keypress.enter)="submit()">
+
+    <app-login-input
+     autocomplete="name"
+     type="text" 
+     label="Nombre" 
+     [control]="form.controls.name"
+     ></app-login-input>
+    
+    <div class="validator" *ngIf="form.controls.name.errors && form.controls.name.touched">
+       <div *ngIf="form.controls.name.errors?.['required']">El nombre es requerido</div>
+    </div>
+
+    <app-login-input
+    autocomplete="salario"
+    type="number" 
+    label="salario" 
+    [control]="form.controls.salario"
+    ></app-login-input>
+   
+   <div class="validator" *ngIf="form.controls.salario.errors && form.controls.salario.touched">
+      <div *ngIf="form.controls.salario.errors?.['required']">El sueldo es requerido</div>
+      <div *ngIf="form.controls.salario.errors?.['min']">El sueldo minimo es 0</div>
+   </div>
+
+   <app-login-input
+    autocomplete="cargo"
+    type="text" 
+    label="cargo" 
+    [control]="form.controls.cargo"
+    ></app-login-input>
+   
+   <div class="validator" *ngIf="form.controls.cargo.errors && form.controls.cargo.touched">
+      <div *ngIf="form.controls.cargo.errors?.['required']">El cargo es requerido</div>
+      
+   </div>
+
+   <app-login-input
+    autocomplete="plantel"
+    type="text" 
+    label="Plantel" 
+    [control]="form.controls.plantel"
+    ></app-login-input>
+   
+   <div class="validator" *ngIf="form.controls.plantel.errors && form.controls.plantel.touched">
+      <div *ngIf="form.controls.plantel.errors?.['required']">El plantel es requerido</div>
+      
+   </div>
+
+
+    <ion-button class="submit" type="submit"  mode="ios" [disabled]="form.invalid" >
+      Agregar empleado
+      <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
+    </ion-button>
+
+  </form>
+
+</ion-content>

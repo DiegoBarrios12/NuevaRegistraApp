@@ -8,7 +8,7 @@
         <ion-icon class="empty-icon" name= "person-circle-outline"> </ion-icon>
     </ion-avatar>
 
-     <h4>Diego Barrios</h4>
+     <h4> {{user()?.name}}</h4>
     <ion-menu-toggle autoHide="false" *ngFor="let p of pages" >
       <ion-item [ngClass]="{'active': currentPaht === p.url}" [routerLink]="p.url" routerDirection="root" detail> 
           <ion-icon slot="start" [name]="p.icon"></ion-icon>
@@ -16,5 +16,13 @@
         </ion-item>
       </ion-menu-toggle>
   </ion-content>
+  <ion-footer class="ion-no-border safe-p-bottom">
+    <ion-toolbar>
+      <ion-item (click)="signOut()" lines="none">
+        <ion-icon slot="start" name="log-out-outline"></ion-icon>
+        <ion-label>Cerrar Sesión</ion-label>
+      </ion-item>
+    </ion-toolbar>
+  </ion-footer>
 </ion-menu> 
 <ion-router-outlet id="menu-content" main> </ion-router-outlet>

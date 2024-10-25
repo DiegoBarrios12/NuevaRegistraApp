@@ -31,15 +31,7 @@ export class AuthPage implements OnInit {
 
       this.firebaseService.signIn(this.form.value as User)
       .then(resp =>{
-        console.log(resp)
-        this.utilsService.routerlink('/main/home')
-        this.utilsService.presentToast({
-          message:'Bienvenido',
-          duration: 1500,
-          color: 'primary',
-          position: 'bottom',
-          icon: 'person-circle-outline'
-        })
+        this.getUserInfo(resp.user.uid)
       }) .catch(error =>{
         console.log(error)
         this.utilsService.presentToast({
@@ -55,5 +47,43 @@ export class AuthPage implements OnInit {
     }
     
   }
+  
+  async getUserInfo(uid: string){//obtener informacion del usuario luego de login
+    if(this.form.valid){
+      const loading = await this.utilsService.loading();
 
+      await loading.present()
+
+      let path=`users/${uid}`;
+
+      this.firebaseService.getDocument(path)//obtener la informacion de firebase
+      .then( (user: User) =>{ //se recibe la respuesta de los valores enviados
+        
+        this.utilsService.saveLocalStorage('user', user);//trae la informacion ubicada en user (local storage)
+        this.utilsService.routerlink('/main/home');
+        this.form.reset();
+
+        this.utilsService.presentToast({
+          message: `Bienvenido ${user.name}`,
+          duration: 1500,
+          color: 'primary',
+          position: 'bottom',
+          icon: 'person-circle-outline'
+        })
+
+      }) .catch(error =>{ //manejo de errores
+        console.log(error)
+        this.utilsService.presentToast({
+          message: error.message,
+          duration: 2000,
+          color: 'danger',
+          position: 'bottom',
+          icon: 'alert-circle-outline'
+        })
+      }).finally(() =>{
+        loading.dismiss();
+      })
+    }
+    
+  }
 }

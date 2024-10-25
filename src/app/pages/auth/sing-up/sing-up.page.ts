@@ -27,18 +27,18 @@ export class SingUpPage implements OnInit {
   ngOnInit() {
   }
 
-  async submit(){
+  async submit(){// se llama al boton de registro
     if(this.form.valid){
-      const loading = await this.utilsService.loading();
+      const loading = await this.utilsService.loading(); //está cargando la informacion
 
-      await loading.present()
+      await loading.present() 
 
-      this.firebaseService.signUp(this.form.value as User)
-      .then( async resp =>{
+      this.firebaseService.signUp(this.form.value as User) //se envian los valores
+      .then( async resp =>{ 
         await this.firebaseService.updateUser(this.form.value.name)
         
         let uid = resp.user.uid;
-        this.form.controls.uid.setValue(uid)
+        this.form.controls.uid.setValue(uid) // se llama al id
         
         //funcion de set
         this.setUserInfo(uid);
@@ -59,6 +59,8 @@ export class SingUpPage implements OnInit {
     }
     
   }
+  
+  //funcion que permite hacer el set que es llamado arriba
   async setUserInfo(uid: string){
     if(this.form.valid){
       const loading = await this.utilsService.loading();
@@ -66,15 +68,17 @@ export class SingUpPage implements OnInit {
       await loading.present()
 
       let path=`users/${uid}`;
-      delete this.form.value.password;
+      delete this.form.value.password; //se elimina la contraseña del usuario
 
-      this.firebaseService.setDocument(path,this.form.value)
-      .then( async resp =>{
+      this.firebaseService.setDocument(path,this.form.value)//se envian los valores
+      .then( async resp =>{ //se recibe la respuesta de los valores enviados
+        
+        this.utilsService.saveLocalStorage('user', this.form.value);//trae la informacion ubicada en user
         this.utilsService.routerlink('/main/home');
         this.form.reset();
 
 
-      }) .catch(error =>{
+      }) .catch(error =>{ //manejo de errores
         console.log(error)
         this.utilsService.presentToast({
           message: error.message,
