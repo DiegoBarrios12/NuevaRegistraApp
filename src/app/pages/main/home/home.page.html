@@ -9,7 +9,7 @@
         <ion-label> 
             <!-- en esta seccion hay que traer la informacion de la api con 
             con los datos del alumno o servira para ver el nombre de la seccion y del alumno-->
-            <div class="name">Diego</div> 
+            <div class="name"></div> 
             <div class="data">
             <strong> Clase: </strong>{{'MP003'}} <br>
             <strong> Correo: </strong>{{user()?.email}} <br>
@@ -31,11 +31,11 @@
 
     </ion-item-sliding>
   </ion-list>
-  <ion-fab vertical="bottom" horizontal="center" slot="fixed">
+  <!-- <ion-fab vertical="bottom" horizontal="center" slot="fixed"> //boton para agregar alumno/empleado
     <ion-fab-button (click)="addUpdateEmployee()">
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
-  </ion-fab>
+  </ion-fab> -->
 
   <ion-toolbar>
     <ion-title>Escanea tu QR</ion-title>

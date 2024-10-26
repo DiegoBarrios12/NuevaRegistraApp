@@ -42,7 +42,7 @@ export class FirebaseService {
     localStorage.removeItem('user');
     this.utilsService.routerlink('/auth')
   }
-  addDocument(path: any, data: any){ //enlazado a users/id/empleado(alumno)
+  addDocument(path: any, data: any){ //estaba estudiando y son otras funciones de la app
     return addDoc(collection(getFirestore(), path),data) //guarda los datos
 
   }
