@@ -5,6 +5,16 @@
 
   <form [formGroup]="form" (ngSubmit)="submit()" class="ion-padding  ion-text-center" (keypress.enter)="submit()">
 
+   <ion-avatar *ngIf="form.value.img"> 
+      <img [src] = "form.value.img"/>
+   </ion-avatar>
+
+   <ion-icon class="img-icon" *ngIf="!form.value.img" name="image-outline"></ion-icon>
+   <br>
+   <ion-button (click)="takeImage()" size="small" >
+    tome/seleccione una foto
+   </ion-button>
+
     <app-login-input
      autocomplete="name"
      type="text" 
@@ -57,7 +67,7 @@
       Agregar empleado
       <ion-icon slot="end" name="checkmark-circle-outline"></ion-icon>
     </ion-button>
-
+    
   </form>
 
 </ion-content>
