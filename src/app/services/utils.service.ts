@@ -2,7 +2,10 @@ import { inject, Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { LoadingController, ModalController, ModalOptions, ToastController, ToastOptions } from '@ionic/angular';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
-
+import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
+import { HttpClient } from '@angular/common/http';
+import { lastValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -11,6 +14,8 @@ export class UtilsService {
   toastCrl = inject (ToastController);
   loadingCtrl= inject(LoadingController);
   modalCtrl= inject(ModalController);
+  constructor(private firestore: AngularFirestore) {}
+  http = inject(HttpClient);
 
   routerlink(url: any){
     this.router.navigateByUrl(url)
@@ -53,5 +58,24 @@ export class UtilsService {
 
       });
     };
+    async startScan(): Promise<string | null> {
+      await BarcodeScanner.checkPermission({ force: true });
+      await BarcodeScanner.hideBackground();
+      const result = await BarcodeScanner.startScan();
+      return result.hasContent ? result.content : null;
+    }
+  
+    async saveScanData(data: string, userId: string): Promise<void> {
+      const path = `users/${userId}/scans`;
+      const id = this.firestore.createId();
+      await this.firestore.collection(path).doc(id).set({ data, timestamp: new Date() });
+    }
+    
+    async obtenerDatosAsistencia(seccion: string) {
+      const url = `https://pgy4121serverlessapi.vercel.app/api/asistencia/qr?seccion=${seccion}`;
+      const observable = this.http.get(url);
+      return await lastValueFrom(observable);
+    }
+  
 
 }

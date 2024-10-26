@@ -8,12 +8,12 @@
         </ion-avatar>
         <ion-label> 
             <!-- en esta seccion hay que traer la informacion de la api con 
-            con los datos del alumno -->
+            con los datos del alumno o servira para ver el nombre de la seccion y del alumno-->
             <div class="name">Diego</div> 
             <div class="data">
-            <strong> Clase: </strong>{{'MT654'}} <br>
-            <strong> Cargo: </strong>{{'Profesor'}} <br>
-            <strong> Plantel: </strong>{{'Chile'}} <br>
+            <strong> Clase: </strong>{{'MP003'}} <br>
+            <strong> Correo: </strong>{{user()?.email}} <br>
+            <strong> Alumno: </strong >{{user()?.name}} <br>
         </div>
         </ion-label>
       </ion-item>
@@ -36,4 +36,27 @@
       <ion-icon name="add"></ion-icon>
     </ion-fab-button>
   </ion-fab>
+
+  <ion-toolbar>
+    <ion-title>Escanea tu QR</ion-title>
+  </ion-toolbar>
+
+<ion-content>
+  <div class="scan-content">
+    <ion-button class="submit" type="submit" expand="block" shape="round" mode="ios" fill="outline" (click)="scanQRCode()">
+      Registra tu asistencia
+    </ion-button>
+    <div *ngIf="scanResult" class="scan-result">
+      <strong>Resultado del escaneo:</strong>
+      <p>{{ scanResult }}</p>
+    </div>
+
+    <ion-button class="submit" type="submit" expand="block"  shape="round" mode="ios" fill="outline" (click)="loadAsistencia('MP003')">
+      Cargar Asistencia
+    </ion-button>
+    <div *ngIf="asistencia">
+      <pre>{{ asistencia }}</pre>
+    </div>
+  </div>
+</ion-content>
 </ion-content>

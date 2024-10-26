@@ -7,10 +7,11 @@ import { initializeApp} from 'firebase/app';
 import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AngularFireModule}from '@angular/fire/compat'
 import { AngularFirestoreModule}from '@angular/fire/compat/firestore'
-
+import { HttpClientModule } from '@angular/common/http';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
+
 
 
 export const firebaseConfig = {
@@ -32,7 +33,8 @@ initializeApp(firebaseConfig);
     IonicModule.forRoot(),
     AppRoutingModule,
     AngularFireModule.initializeApp(firebaseConfig),
-    AngularFirestoreModule
+    AngularFirestoreModule,
+    HttpClientModule,
   ],
 
   providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],

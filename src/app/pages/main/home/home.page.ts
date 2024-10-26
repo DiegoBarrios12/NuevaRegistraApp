@@ -15,26 +15,28 @@ import { Observable, OperatorFunction } from 'rxjs';
 })
 export class HomePage implements OnInit {
 
-  utilService= inject(UtilsService);
+  utilsService= inject(UtilsService);
   firebaseService= inject (FirebaseService)
   loading: boolean = false;
   employees: Employees []= [];
+  scanResult: string | null = null;
+  asistencia: any;
+  
 
-  ngOnInit() {
-    // this.getEmployee
+  async ngOnInit() {
   }
   ionVewWillEnter(){
     this.getEmployee()
   }
   async addUpdateEmployee( employee?:Employees){
-    let modal= await this.utilService.getModal({
+    let modal= await this.utilsService.getModal({
       component: UpdateEmployeeComponent,
       cssClass:'add-update-modal',
       componentProps: { employee }
     })
 }
   user(): User {
-    return this.utilService.getLocalStorage('user')
+    return this.utilsService.getLocalStorage('user')
   }
   getEmployee() {
     const path = `users/${this.user().uid}/empleados`;
@@ -53,6 +55,23 @@ export class HomePage implements OnInit {
         this.loading = false;
       });
   }
-  
-
+  async scanQRCode() {
+    try {
+      this.scanResult = await this.utilsService.startScan();
+      console.log('Resultado del escaneo:', this.scanResult);
+    } catch (error) {
+      console.error('Error al escanear QR:', error);
+    }
   }
+
+  async loadAsistencia(seccion: string) {
+    try {
+      this.asistencia = await this.utilsService.obtenerDatosAsistencia(seccion);
+      console.log('Asistencia:', this.asistencia);
+    } catch (error) {
+      console.error('Error al obtener asistencia:', error);
+    }
+  }
+
+}
+
