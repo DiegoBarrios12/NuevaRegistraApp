@@ -13,7 +13,6 @@ import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
 
 
-
 export const firebaseConfig = {
   apiKey: "AIzaSyAQ971liZpi1HFSK56iN-BRUvvXTSRG6DQ",
   authDomain: "nuevaregistraapp.firebaseapp.com",

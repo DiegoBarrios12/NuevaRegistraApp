@@ -5,7 +5,7 @@ import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 import { BarcodeScanner } from '@capacitor-community/barcode-scanner';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { HttpClient } from '@angular/common/http';
-import { lastValueFrom } from 'rxjs';
+import { BehaviorSubject, lastValueFrom } from 'rxjs';
 @Injectable({
   providedIn: 'root'
 })
@@ -16,6 +16,8 @@ export class UtilsService {
   modalCtrl= inject(ModalController);
   constructor(private firestore: AngularFirestore) {}
   http = inject(HttpClient);
+  asistenciasSubject = new BehaviorSubject<any[]>([]);
+  asistencias$ = this.asistenciasSubject.asObservable();
 
   routerlink(url: any){
     this.router.navigateByUrl(url)
@@ -45,13 +47,27 @@ export class UtilsService {
     dismissModal(data?: any){
       return this.modalCtrl.dismiss(data);
     }
+    async obtenerDatosAsistencia(seccion: string) {
+      const url = `https://pgy4121serverlessapi.vercel.app/api/asistencia/qr?seccion=${seccion}`;
+      const observable = this.http.get(url, { responseType: 'text' });
+      try {
+        const responseText = await lastValueFrom(observable);
+        return JSON.parse(responseText);
+      } catch (error) {
+      return await lastValueFrom(observable);
+    }
+  }
 
+  agregarAsistencia(asistencia: any) {
+    const asistenciasActuales = this.asistenciasSubject.value;
+    this.asistenciasSubject.next([...asistenciasActuales, asistencia]);
+  }
     async takePicture  (promptLabelHeader: string){
       return await Camera.getPhoto({
         quality: 90,
         allowEditing: true,
         resultType: CameraResultType.DataUrl,
-        source: CameraSource.Prompt, //opcion a elegir
+        source: CameraSource.Prompt, //opcion a elegir subir foto o tomar con camara
         promptLabelHeader,
         promptLabelPhoto: 'seleccionar imagen',
         promptLabelPicture:'toma una foto'
@@ -71,11 +87,7 @@ export class UtilsService {
       await this.firestore.collection(path).doc(id).set({ data, timestamp: new Date() });
     }
     
-    async obtenerDatosAsistencia(seccion: string) {
-      const url = `https://pgy4121serverlessapi.vercel.app/api/asistencia/qr?seccion=${seccion}`;
-      const observable = this.http.get(url);
-      return await lastValueFrom(observable);
-    }
+    
   
 
 }

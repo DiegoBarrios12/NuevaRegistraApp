@@ -24,6 +24,9 @@ export class UpdateEmployeeComponent  implements OnInit {
       salario: new FormControl('null', [Validators.required, Validators.min(0)]),
       cargo: new FormControl('', [Validators.required]),
       plantel: new FormControl('', [Validators.required]),
+
+      
+
     })
     ngOnInit() {
       this.user =this.utilsService.getLocalStorage('user');

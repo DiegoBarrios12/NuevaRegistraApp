@@ -1,12 +1,14 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DocumentChangeAction } from '@angular/fire/compat/firestore';
+import { BehaviorSubject } from 'rxjs';
+import { Asistencia } from 'src/app/models/asistencia';
 import { Employees } from 'src/app/models/employees';
 import { User } from 'src/app/models/user.model';
 import { FirebaseService } from 'src/app/services/firebase.service';
 import { UtilsService } from 'src/app/services/utils.service';
 import { UpdateEmployeeComponent } from 'src/app/shared/components/update-employee/update-employee.component';
-import { AngularFirestoreCollection, } from '@angular/fire/compat/firestore';
-import { Observable, OperatorFunction } from 'rxjs';
+
+
 
 @Component({
   selector: 'app-home',
@@ -20,11 +22,18 @@ export class HomePage implements OnInit {
   loading: boolean = false;
   employees: Employees []= [];
   scanResult: string | null = null;
-  asistencia: any;
-  
+  asistencia: any | null = null;
+  asistencias: any[] = [];
 
   async ngOnInit() {
+
+    this.utilsService.asistencias$.subscribe((asistencias) => {
+      this.asistencias = asistencias;
+    });
+    
   }
+
+
   ionVewWillEnter(){
     this.getEmployee()
   }
@@ -57,12 +66,25 @@ export class HomePage implements OnInit {
   }
   async scanQRCode() {
     try {
-      this.scanResult = await this.utilsService.startScan();
-      console.log('Resultado del escaneo:', this.scanResult);
+       
+        this.scanResult = await this.utilsService.startScan();
+        console.log('Resultado del escaneo:', this.scanResult);
+        
+        await this.asistencia.agregarAsistencia(this.scanResult);
+        
+        
     } catch (error) {
-      console.error('Error al escanear QR:', error);
+        console.log(error);
+        this.utilsService.presentToast({
+            message: error.message,
+            duration: 2000,
+            color: 'danger',
+            position: 'bottom',
+            icon: 'alert-circle-outline'
+        });
     }
   }
+  
 
   async loadAsistencia(seccion: string) {
     try {
