@@ -17,6 +17,7 @@ export class ProfilePage implements OnInit {
   constructor() { }
 
   async ngOnInit() {
+    
 }
 user(): User {
   return this.utilsService.getLocalStorage('user')
@@ -33,7 +34,7 @@ async takeImage(){
 
   this.firebaseService.updateDocument(path,{img: user.img}) 
   .then(async resp=> {
-    
+
     this.utilsService.saveLocalStorage('user', user);
     
     this.utilsService.presentToast({

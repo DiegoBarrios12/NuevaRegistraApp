@@ -4,5 +4,6 @@ export interface Asistencia {
   fecha?: string;
   estudiante?: string;
   estado?: string;
+  usuarioId?: string;
 }
 

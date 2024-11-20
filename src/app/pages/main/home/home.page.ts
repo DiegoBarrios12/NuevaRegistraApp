@@ -91,9 +91,9 @@ export class HomePage implements OnInit {
     const parsedData = JSON.parse(scanResult); // Asume que el QR contiene datos JSON
     return {
       seccion: parsedData.seccion || 'Sin sección',
-      estudiante: parsedData.estudiante || 'Sin nombre',
+      estudiante: parsedData.name || 'Sin nombre',
       estado: parsedData.estado || 'Presente',
-      fecha: '', // Se agrega automáticamente 
+      fecha: '', // Se agrega automáticamente en firebase
     };
   }
   cargarAsistencias() {
