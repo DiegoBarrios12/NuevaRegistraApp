@@ -1,6 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { DocumentChangeAction } from '@angular/fire/compat/firestore';
-import { BehaviorSubject } from 'rxjs';
 import { Asistencia } from 'src/app/models/asistencia';
 import { Employees } from 'src/app/models/employees';
 import { User } from 'src/app/models/user.model';
@@ -22,15 +21,12 @@ export class HomePage implements OnInit {
   loading: boolean = false;
   employees: Employees []= [];
   scanResult: string | null = null;
-  asistencia: any | null = null;
-  asistencias: any[] = [];
+  asistencias: Asistencia[] = [];
+ 
 
   async ngOnInit() {
 
-    this.utilsService.asistencias$.subscribe((asistencias) => {
-      this.asistencias = asistencias;
-    });
-    
+    this.cargarAsistencias();
   }
 
 
@@ -70,13 +66,20 @@ export class HomePage implements OnInit {
         this.scanResult = await this.utilsService.startScan();
         console.log('Resultado del escaneo:', this.scanResult);
         
-        await this.asistencia.agregarAsistencia(this.scanResult);
-        
-        
+        const asistencia: Asistencia = this.procesarScanResult(this.scanResult);
+        await this.firebaseService.agregarAsistencia(asistencia);
+        this.utilsService.presentToast({
+          message: 'Asistencia agregada con éxito',
+          duration: 2000,
+          color: 'success',
+          position: 'bottom',
+          icon: 'checkmark-circle-outline',
+        });
+        this.cargarAsistencias();
     } catch (error) {
         console.log(error);
         this.utilsService.presentToast({
-            message: error.message,
+            message: error.message || 'Error al procesar el escaneo',
             duration: 2000,
             color: 'danger',
             position: 'bottom',
@@ -84,15 +87,19 @@ export class HomePage implements OnInit {
         });
     }
   }
-  
-
-  async loadAsistencia(seccion: string) {
-    try {
-      this.asistencia = await this.utilsService.obtenerDatosAsistencia(seccion);
-      console.log('Asistencia:', this.asistencia);
-    } catch (error) {
-      console.error('Error al obtener asistencia:', error);
-    }
+  procesarScanResult(scanResult: string): Asistencia {
+    const parsedData = JSON.parse(scanResult); // Asume que el QR contiene datos JSON
+    return {
+      seccion: parsedData.seccion || 'Sin sección',
+      estudiante: parsedData.estudiante || 'Sin nombre',
+      estado: parsedData.estado || 'Presente',
+      fecha: '', // Se agrega automáticamente 
+    };
+  }
+  cargarAsistencias() {
+    this.firebaseService.obtenerAsistencias().subscribe((data) => {
+      this.asistencias = data;
+    });
   }
 
 }

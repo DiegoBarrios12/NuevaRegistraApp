@@ -11,9 +11,9 @@
             con los datos del alumno o servira para ver el nombre de la seccion y del alumno-->
             <div class="name"></div> 
             <div class="data">
-            <strong> Clase: </strong>{{'MP003'}} <br>
-            <strong> Correo: </strong>{{user()?.email}} <br>
-            <strong> Alumno: </strong >{{user()?.name}} <br>
+            <strong>Institucion:</strong> Duoc UC <br>
+            <strong> Correo: </strong>{{user()?.email|uppercase}} <br>
+            <strong> Alumno: </strong >{{user()?.name|uppercase}} <br>
         </div>
         </ion-label>
       </ion-item>
@@ -37,9 +37,6 @@
     </ion-fab-button>
   </ion-fab> -->
 
-  <ion-toolbar>
-    <ion-title>Escanea tu Asistencia </ion-title>
-  </ion-toolbar>
 
 <ion-content>
   <div class="scan-content">
@@ -47,7 +44,7 @@
       Registra tu asistencia
     </ion-button>
     <div *ngIf="scanResult" class="scan-result">
-      <strong>Resultado del escaneo:</strong> 
+     
       <p>{{ scanResult }}</p>
     </div>
     <ion-grid>
@@ -59,20 +56,13 @@
       </ion-row>
   
       <ion-row *ngFor="let asistencia of asistencias">
-        <ion-col>{{ asistencia.seccion }}</ion-col>
-        <ion-col>{{ asistencia.fecha }}</ion-col>
-        <ion-col>{{ asistencia.estudiante }}</ion-col>
-        <ion-col>{{ asistencia.estado }}</ion-col>
+        <ion-col>{{ asistencia.seccion |uppercase}}</ion-col>
+      <ion-col>{{ asistencia.fecha | date: 'short' }}</ion-col>
+      <ion-col>{{ user()?.name|uppercase }}</ion-col>
+      <ion-col>{{ asistencia.estado |uppercase}}</ion-col>
       </ion-row>
     </ion-grid>
     
-
-    <ion-button class="submit" type="submit" expand="block"  shape="round" mode="ios" fill="outline" (click)="loadAsistencia('MP003')">
-      Cargar Asistencia
-    </ion-button>
-    <div *ngIf="asistencia">
-      <pre>{{ asistencia }}</pre>
-    </div>
   </div>
   
   </ion-content>

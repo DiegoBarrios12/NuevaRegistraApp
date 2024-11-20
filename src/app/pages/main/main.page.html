@@ -5,10 +5,11 @@
   <ion-content class="ion-text-center">
 
     <ion-avatar>
-        <ion-icon class="empty-icon" name= "person-circle-outline"> </ion-icon>
+      <img *ngIf="user()?.img"[src]="user()?.img" alt="">
+        <ion-icon *ngIf="!user()?.img" class="empty-icon" name= "person-circle-outline"> </ion-icon>
     </ion-avatar>
 
-     <h4> {{user()?.name}}</h4>
+     <h4> {{user()?.name |uppercase}}</h4>
     <ion-menu-toggle autoHide="false" *ngFor="let p of pages" >
       <ion-item [ngClass]="{'active': currentPaht === p.url}" [routerLink]="p.url" routerDirection="root" detail> 
           <ion-icon slot="start" [name]="p.icon"></ion-icon>

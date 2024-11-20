@@ -1,4 +1,4 @@
-import { Component, inject, input, Input, OnInit } from '@angular/core';
+import { Component, inject, Input, OnInit } from '@angular/core';
 import { UtilsService } from 'src/app/services/utils.service';
 @Component({
   selector: 'app-header',

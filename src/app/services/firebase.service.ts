@@ -4,26 +4,33 @@ import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/comp
 import { getAuth,signInWithEmailAndPassword,createUserWithEmailAndPassword,updateProfile, sendPasswordResetEmail} from 'firebase/auth'
 import { User } from '../models/user.model';
 
-import { addDoc, collection, doc, getDoc, getFirestore, setDoc } from '@angular/fire/firestore'
+import { addDoc, collection, doc, getDoc, getFirestore, setDoc, updateDoc } from '@angular/fire/firestore'
 import { UtilsService } from './utils.service';
 import { getDownloadURL, getStorage, ref, uploadString } from 'firebase/storage'
 import { Asistencia } from '../models/asistencia';
+import { Observable } from 'rxjs';
+
+
 
 @Injectable({
   providedIn: 'root'
 })
+
+
 export class FirebaseService {
 
   auth = inject(AngularFireAuth);
   firestore = inject(AngularFirestore);
   utilsService = inject(UtilsService)
   dataRef: AngularFirestoreCollection<User>;
-  
+  obtenerDato: AngularFirestoreCollection<Asistencia>;
 
   getAuth(){
     return getAuth();
   }
-
+  constructor() {
+    this.obtenerDato = this.firestore.collection<Asistencia>('asistencias');
+  }
   async getCurrentUser(): Promise<User | null> {// creacion de metodo que crea una  promesa que se resuelve cuando firebase se haya cargado que a su vez llama al metodo current user de firebase
     const user = await this.auth.currentUser;
     return user ? { uid: user.uid, email: user.email } as User : null;
@@ -40,7 +47,7 @@ export class FirebaseService {
   setDocument(path: any, data: any){
     return setDoc(doc(getFirestore(), path), data)
 } 
-   async getDocument(path: any){
+  async getDocument(path: any){
     return (await (getDoc(doc(getFirestore(), path)))).data()
   }
   sendRecoveryEmail(email: string){
@@ -53,12 +60,21 @@ export class FirebaseService {
  
   agregarAsistencia(asistencia: Asistencia): Promise<void> {
     const id = this.firestore.createId(); // Genera un ID único para la nueva asistencia
+    asistencia.fecha = new Date().toISOString();
     return this.firestore.collection('asistencias').doc(id).set({ ...asistencia });
+    }
+    // obtenerAsistencias(path: any): AngularFirestoreCollection <Asistencia> {
+    //   this.obtenerDato= this.firestore.collection(path,ref=> ref.orderBy ('name', 'asc'))
+    //   return this.obtenerDato
+    // }
+    obtenerAsistencias(): Observable<Asistencia[]> {
+      return this.obtenerDato.valueChanges(); 
     }
   addDocument(path: any, data: any){ //estaba estudiando y son otras funciones de la app
     return addDoc(collection(getFirestore(), path),data) //guarda  datos en la colleccion iniciada en fire 
 
   }
+  
   async updateImg(path: any, data_url: any){
     return uploadString(ref(getStorage(), path),data_url,'data_url')
     .then(()=>{
@@ -68,6 +84,10 @@ export class FirebaseService {
       this.dataRef= this.firestore.collection(path,ref=> ref.orderBy ('name', 'asc'))
       return this.dataRef
     }
-
-    
-}
+ async getFilePath(url: string){
+  return ref(getStorage(), url).fullPath
+ }
+  updateDocument( path: any, data: any){
+    return updateDoc(doc(getFirestore(),path),data)
+  }
+  }
