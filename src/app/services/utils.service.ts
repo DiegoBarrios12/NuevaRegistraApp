@@ -74,12 +74,49 @@ export class UtilsService {
 
       });
     };
-    async startScan(): Promise<string | null> {
-      await BarcodeScanner.checkPermission({ force: true });
-      await BarcodeScanner.hideBackground();
-      const result = await BarcodeScanner.startScan();
-      return result.hasContent ? result.content : null;
+   
+  // Método para iniciar la cámara y capturar una imagen
+  async startCamera(): Promise<string | null> {
+    try {
+      // Solicitar permisos de la cámara
+      const permissions = await Camera.requestPermissions();
+      if (permissions.camera !== 'granted') {
+        console.warn('Permiso de cámara denegado');
+        return null;
+      }
+
+      // Capturar imagen con la cámara
+      const image = await Camera.getPhoto({
+        resultType: CameraResultType.DataUrl, // Resultado en formato Base64
+        source: CameraSource.Camera, // Usar la cámara
+        quality: 90, // Calidad de la imagen
+      });
+
+      // Retornar el Data URL de la imagen
+      return image.dataUrl ?? null;
+    } catch (error) {
+      console.error('Error al usar la cámara:', error);
+      return null;
     }
+  }
+
+  // Método para iniciar el escaneo (puedes adaptarlo según tu lógica)
+  async startScan(): Promise<string | null> {
+    try {
+      // Simular un resultado de escaneo
+      const simulatedScanResult = JSON.stringify({
+        seccion: 'A1',
+        name: 'Estudiante Demo',
+        estado: 'Presente',
+      });
+
+      // Retornar el resultado simulado como string
+      return simulatedScanResult;
+    } catch (error) {
+      console.error('Error durante el escaneo:', error);
+      return null;
+    }
+  }
   
     async saveScanData(data: string, userId: string): Promise<void> {
       const path = `users/${userId}/scans`;

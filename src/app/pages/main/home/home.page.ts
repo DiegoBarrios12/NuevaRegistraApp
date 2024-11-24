@@ -62,45 +62,67 @@ export class HomePage implements OnInit {
   }
   async scanQRCode() {
     try {
-       
-        this.scanResult = await this.utilsService.startScan();
-        console.log('Resultado del escaneo:', this.scanResult);
-        
-        const asistencia: Asistencia = this.procesarScanResult(this.scanResult);
-        await this.firebaseService.agregarAsistencia(asistencia);
-        this.utilsService.presentToast({
-          message: 'Asistencia agregada con éxito',
-          duration: 2000,
-          color: 'success',
-          position: 'bottom',
-          icon: 'checkmark-circle-outline',
-        });
-        this.cargarAsistencias();
+      // Escaneo o captura según tu necesidad
+      const capturedImage = await this.utilsService.startCamera();
+      const scannedData = await this.utilsService.startScan();
+
+      if (!capturedImage && !scannedData) {
+        throw new Error('No se obtuvo ningún dato');
+      }
+
+      console.log('Resultado de la captura o escaneo:', capturedImage || scannedData);
+
+      // Procesar el resultado del escaneo
+      const asistencia: Asistencia = this.procesarScanResult(scannedData || '');
+      await this.firebaseService.agregarAsistencia(asistencia);
+
+      // Mostrar notificación de éxito
+      this.utilsService.presentToast({
+        message: 'Asistencia agregada con éxito',
+        duration: 2000,
+        color: 'success',
+        position: 'bottom',
+        icon: 'checkmark-circle-outline',
+      });
+
+      // Cargar asistencias
+      this.cargarAsistencias();
     } catch (error) {
-        console.log(error);
-        this.utilsService.presentToast({
-            message: error.message || 'Error al procesar el escaneo',
-            duration: 2000,
-            color: 'danger',
-            position: 'bottom',
-            icon: 'alert-circle-outline'
-        });
+      console.error('Error:', error);
+      this.utilsService.presentToast({
+        message: error.message || 'Error al procesar',
+        duration: 2000,
+        color: 'danger',
+        position: 'bottom',
+        icon: 'alert-circle-outline',
+      });
     }
   }
+
   procesarScanResult(scanResult: string): Asistencia {
-    const parsedData = JSON.parse(scanResult); 
-    return {
-      seccion: parsedData.seccion || 'Sin sección',
-      estudiante: parsedData.name || 'Sin nombre',
-      estado: parsedData.estado || 'Presente',
-      fecha: '', // Se agrega automáticamente en firebase
-    };
+    try {
+      const parsedData = JSON.parse(scanResult);
+      return {
+        seccion: parsedData.seccion || 'Sin sección',
+        estudiante: parsedData.name || 'Sin nombre',
+        estado: parsedData.estado || 'Presente',
+        fecha: '', // Automático en Firebase
+      };
+    } catch {
+      console.warn('El resultado no es JSON válido. Usando datos genéricos');
+      return {
+        seccion: 'Sin sección',
+        estudiante: 'Sin nombre',
+        estado: 'Presente',
+        fecha: '',
+      };
+    }
   }
+
   cargarAsistencias() {
     this.firebaseService.obtenerAsistencias().subscribe((data) => {
       this.asistencias = data;
     });
   }
-
 }
 
