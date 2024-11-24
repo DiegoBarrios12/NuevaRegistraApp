@@ -5,6 +5,7 @@ import { UtilsService } from 'src/app/services/utils.service';
   templateUrl: './header.component.html',
   styleUrls: ['./header.component.scss'],
 })
+
 export class HeaderComponent  implements OnInit {
 
   @Input() title!: string;

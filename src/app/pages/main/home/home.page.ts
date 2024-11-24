@@ -88,7 +88,7 @@ export class HomePage implements OnInit {
     }
   }
   procesarScanResult(scanResult: string): Asistencia {
-    const parsedData = JSON.parse(scanResult); // Asume que el QR contiene datos JSON
+    const parsedData = JSON.parse(scanResult); 
     return {
       seccion: parsedData.seccion || 'Sin sección',
       estudiante: parsedData.name || 'Sin nombre',

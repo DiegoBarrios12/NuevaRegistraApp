@@ -9,12 +9,14 @@ import { IonicModule } from '@ionic/angular';
 
 
 
+
 @NgModule({
   declarations: [
     HeaderComponent,
     LoginInputComponent,
     LogoComponent,
-    UpdateEmployeeComponent
+    UpdateEmployeeComponent,
+    
   ],
   exports: [
     HeaderComponent,
@@ -29,7 +31,8 @@ import { IonicModule } from '@ionic/angular';
     CommonModule,
     FormsModule,
     ReactiveFormsModule,
-    IonicModule
+    IonicModule,
+    
   ]
 })
 export class SharedModule { }
