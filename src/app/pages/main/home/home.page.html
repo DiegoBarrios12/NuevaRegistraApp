@@ -60,7 +60,7 @@
   
       <ion-row *ngFor="let asistencia of asistencias">
         <ion-col>{{ asistencia.seccion |uppercase}}</ion-col>
-      <ion-col>{{ asistencia.fecha | date: 'short' }}</ion-col>
+      <ion-col>{{ asistencia.fecha }}</ion-col>
       <!-- <ion-col>{{ asistencia.estudiante |uppercase}}</ion-col> -->
        <ion-col>{{ user()?.name|uppercase }}</ion-col> 
       <ion-col>{{ asistencia.estado |uppercase}}</ion-col>

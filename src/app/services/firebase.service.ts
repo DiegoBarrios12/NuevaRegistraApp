@@ -90,4 +90,5 @@ export class FirebaseService {
   updateDocument( path: any, data: any){
     return updateDoc(doc(getFirestore(),path),data)
   }
+  
   }

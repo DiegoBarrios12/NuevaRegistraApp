@@ -9,7 +9,7 @@ const routes: Routes = [
   // },
   {
     path: '',
-    redirectTo: 'auth',
+    redirectTo: 'spash',
     pathMatch: 'full'
   },
   {
@@ -22,6 +22,10 @@ const routes: Routes = [
     canActivate: [AuthGuard],
 
     loadChildren: () => import('./pages/main/main.module').then( m => m.MainPageModule) 
+  },
+  {
+    path: 'spash',
+    loadChildren: () => import('./pages/spash/spash.module').then( m => m.SpashPageModule)
   },
 ];
 

@@ -48,7 +48,7 @@ export class UtilsService {
       return this.modalCtrl.dismiss(data);
     }
     async obtenerDatosAsistencia(seccion: string) {
-      const url = `https://pgy4121serverlessapi.vercel.app/api/asistencia/qr?seccion=${seccion}`;
+      const url = 'https://pgy4121serverlessapi.vercel.app/api/asistencia/qr?seccion=${seccion}';
       const observable = this.http.get(url, { responseType: 'text' });
       try {
         const responseText = await lastValueFrom(observable);
@@ -100,31 +100,35 @@ export class UtilsService {
     }
   }
 
-  // Método para iniciar el escaneo (puedes adaptarlo según tu lógica)
-  async startScan(): Promise<string | null> {
-    try {
-      // Simular un resultado de escaneo
-      const simulatedScanResult = JSON.stringify({
-        seccion: 'A1',
-        name: 'Estudiante Demo',
-        estado: 'Presente',
-      });
+  // Método para iniciar el escaneo 
+    async startScan(): Promise<string | null> {
+    await BarcodeScanner.checkPermission({ force: true });
+    await BarcodeScanner.hideBackground();
+    const result = await BarcodeScanner.startScan();
+    return result.hasContent ? result.content : null;
+  }
 
-      // Retornar el resultado simulado como string
-      return simulatedScanResult;
+  async saveAsistencia(asistencia: any, userId: string): Promise<void> {
+    try {
+      const path = `users/${userId}/asistencias`;
+      const id = this.firestore.createId();
+      await this.firestore.collection(path).doc(id).set({
+        ...asistencia,
+        timestamp: new Date(), // Agregar fecha y hora del registro
+      });
+      console.log(`Asistencia guardada en la colección: ${path}`);
     } catch (error) {
-      console.error('Error durante el escaneo:', error);
-      return null;
+      console.error('Error al guardar la asistencia:', error);
+      throw error;
     }
   }
-  
-    async saveScanData(data: string, userId: string): Promise<void> {
-      const path = `users/${userId}/scans`;
-      const id = this.firestore.createId();
-      await this.firestore.collection(path).doc(id).set({ data, timestamp: new Date() });
-    }
-    
-    
-  
 
+  // Obtener asistencias de la colección "users/{userId}/asistencias"
+  async getAsistencias(userId: string): Promise<void> {
+    const path = `users/${userId}/asistencias`;
+    this.firestore.collection(path).valueChanges({ idField: 'id' }).subscribe((data: any[]) => {
+      this.asistenciasSubject.next(data);
+      console.log('Asistencias cargadas:', data);
+    });
+  }
 }
