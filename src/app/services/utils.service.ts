@@ -62,7 +62,8 @@ export class UtilsService {
     const asistenciasActuales = this.asistenciasSubject.value;
     this.asistenciasSubject.next([...asistenciasActuales, asistencia]);
   }
-    async takePicture  (promptLabelHeader: string){
+
+  async takePicture  (promptLabelHeader: string){
       return await Camera.getPhoto({
         quality: 90,
         allowEditing: true,
@@ -75,39 +76,57 @@ export class UtilsService {
       });
     };
    
-  // Método para iniciar la cámara y capturar una imagen
-  async startCamera(): Promise<string | null> {
-    try {
-      // Solicitar permisos de la cámara
-      const permissions = await Camera.requestPermissions();
-      if (permissions.camera !== 'granted') {
-        console.warn('Permiso de cámara denegado');
+  
+    async startCamera(): Promise<string | null> {
+      try {
+        // Solicitar permisos de la cámara
+        const permissions = await Camera.requestPermissions();
+        if (permissions.camera !== 'granted') {
+          console.warn('Permiso de cámara denegado');
+          return null;
+        }
+    
+        // Capturar imagen con la cámara
+        const image = await Camera.getPhoto({
+          resultType: CameraResultType.DataUrl, // Resultado en formato Base64
+          source: CameraSource.Camera, // Usar la cámara
+          quality: 90, // Calidad de la imagen
+        });
+    
+        // Retornar el Data URL de la imagen
+        return image.dataUrl ?? null;
+      } catch (error) {
+        console.error('Error al usar la cámara:', error);
         return null;
       }
-
-      // Capturar imagen con la cámara
-      const image = await Camera.getPhoto({
-        resultType: CameraResultType.DataUrl, // Resultado en formato Base64
-        source: CameraSource.Camera, // Usar la cámara
-        quality: 90, // Calidad de la imagen
-      });
-
-      // Retornar el Data URL de la imagen
-      return image.dataUrl ?? null;
-    } catch (error) {
-      console.error('Error al usar la cámara:', error);
-      return null;
     }
-  }
-
-  // Método para iniciar el escaneo 
+    
     async startScan(): Promise<string | null> {
-    await BarcodeScanner.checkPermission({ force: true });
-    await BarcodeScanner.hideBackground();
-    const result = await BarcodeScanner.startScan();
-    return result.hasContent ? result.content : null;
-  }
-
+      try {
+        // Verificar permisos para el escaneo de código QR
+        const status = await BarcodeScanner.checkPermission({ force: true });
+        if (!status.granted) {
+          console.warn('Permiso de escaneo denegado');
+          return null;
+        }
+    
+        // Ocultar el fondo de la aplicación para iniciar el escaneo
+        await BarcodeScanner.hideBackground();
+    
+        // Iniciar el escaneo
+        const result = await BarcodeScanner.startScan();
+    
+        // Devolver el contenido si el escaneo tiene datos
+        return result.hasContent ? result.content : null;
+      } catch (error) {
+        console.error('Error al escanear el código QR:', error);
+        return null;
+      } finally {
+        // Mostrar el fondo de la aplicación nuevamente
+        BarcodeScanner.showBackground();
+      }
+    }
+    
   async saveAsistencia(asistencia: any, userId: string): Promise<void> {
     try {
       const path = `users/${userId}/asistencias`;
@@ -123,7 +142,7 @@ export class UtilsService {
     }
   }
 
-  // Obtener asistencias de la colección "users/{userId}/asistencias"
+  // Obtener asistencias de la colección "users"
   async getAsistencias(userId: string): Promise<void> {
     const path = `users/${userId}/asistencias`;
     this.firestore.collection(path).valueChanges({ idField: 'id' }).subscribe((data: any[]) => {
@@ -131,4 +150,6 @@ export class UtilsService {
       console.log('Asistencias cargadas:', data);
     });
   }
+
+  
 }
